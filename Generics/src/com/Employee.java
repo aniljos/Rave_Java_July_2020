@@ -3,7 +3,7 @@ package com;
 import java.util.Objects;
 
 
-public class Employee {
+public class Employee implements Comparable<Employee>{
 
 	//class state
 	public  static int count;
@@ -15,30 +15,28 @@ public class Employee {
 	private double salary;
 	
 	static {
-		System.out.println("Employee.static block()");
+		//System.out.println("Employee.static block()");
 		count = 10;
 	}
 	
 	public Employee() {
 		
-		System.out.println("Employee.Employee()");
+		///System.out.println("Employee.Employee()");
 		count++;
 	}
 	public Employee(int id, String name, double salary) {
 		
-		
 		this();
-		System.out.println("Employee.Employee() with params");
+		///System.out.println("Employee.Employee() with params");
 		this.id = id;
 		this.name = name;
 		this.salary = salary;
-		
 	}
 
 	@Override
 	protected void finalize() throws Throwable {
 		
-		System.out.println("Employee.finalize()");
+		//System.out.println("Employee.finalize()");
 	}
 	
 	public static int getCount() {
@@ -85,6 +83,13 @@ public class Employee {
 		
 		return Objects.hash(this.id, this.name, this.salary);
 	}
+	@Override
+	public int compareTo(Employee emp) {
+		
+		return this.name.compareTo(emp.name);
+	}
+	
+	
 	
 }
 

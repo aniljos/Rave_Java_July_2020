@@ -1,0 +1,90 @@
+Class: com.Logging
+Method: main
+Level: SEVERE
+Message: This is a severe message
+Time: 1594356333486
+
+Class: com.Logging
+Method: main
+Level: WARNING
+Message: This is a warning message
+Time: 1594356333516
+
+Class: com.Logging
+Method: main
+Level: INFO
+Message: This is a info message
+Time: 1594356333517
+
+Class: com.Logging
+Method: main
+Level: CONFIG
+Message: This is a config message
+Time: 1594356333518
+
+Class: com.Logging
+Method: main
+Level: FINE
+Message: This is a fine message
+Time: 1594356333518
+
+Class: com.Logging
+Method: main
+Level: FINER
+Message: This is a finer message
+Time: 1594356333518
+
+Class: com.Logging
+Method: main
+Level: SEVERE
+Message: This is a severe message
+Time: 1594356584269
+
+Class: com.Logging
+Method: main
+Level: WARNING
+Message: This is a warning message
+Time: 1594356584307
+
+Class: com.Logging
+Method: main
+Level: INFO
+Message: This is a info message
+Time: 1594356584308
+
+Class: com.Logging
+Method: main
+Level: CONFIG
+Message: This is a config message
+Time: 1594356584309
+
+Class: com.Logging
+Method: main
+Level: FINE
+Message: This is a fine message
+Time: 1594356584310
+
+Class: com.Logging
+Method: main
+Level: FINER
+Message: This is a finer message
+Time: 1594356584310
+
+Class: com.test.Test
+Method: print
+Level: INFO
+Message: This is print...
+Time: 1594356584310
+
+Class: com.test.Test
+Method: print
+Level: SEVERE
+Message: This is print...
+Time: 1594356584311
+
+Class: com.test.Test
+Method: print
+Level: FINE
+Message: This is print...
+Time: 1594356584312
+

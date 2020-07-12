@@ -1,0 +1,10 @@
+Jul 10, 2020 10:04:44 AM com.Logging main
+SEVERE: This is a severe message
+Jul 10, 2020 10:04:44 AM com.Logging main
+WARNING: This is a warning message
+Jul 10, 2020 10:04:44 AM com.Logging main
+INFO: This is a info message
+Jul 10, 2020 10:04:44 AM com.Logging main
+CONFIG: This is a config message
+Jul 10, 2020 10:04:44 AM com.Logging main
+FINE: This is a fine message
