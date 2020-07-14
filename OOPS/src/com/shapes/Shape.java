@@ -3,16 +3,12 @@ package com.shapes;
 import java.awt.Graphics;
 import java.awt.Point;
 
-import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
 public abstract class Shape {
 
 	protected Point start;
 	protected Point end;
 	
-	
-
 	public Point getStart() {
 		return start;
 	}
