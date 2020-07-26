@@ -2,13 +2,21 @@ package com.shapes;
 
 import java.awt.Graphics;
 import java.awt.Point;
+import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-public abstract class Shape {
+@XmlType(propOrder = {"start", "end"})
+@XmlSeeAlso({Line.class, Rectangle.class})
+public abstract class Shape implements Serializable{
+	
 
 	protected Point start;
 	protected Point end;
 	
+	@XmlJavaTypeAdapter(PointAdapter.class)
 	public Point getStart() {
 		return start;
 	}
@@ -17,6 +25,7 @@ public abstract class Shape {
 		this.start = start;
 	}
 
+	@XmlJavaTypeAdapter(PointAdapter.class)
 	public Point getEnd() {
 		return end;
 	}

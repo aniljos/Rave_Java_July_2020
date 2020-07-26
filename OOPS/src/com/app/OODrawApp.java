@@ -10,17 +10,43 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
+import com.ResourceLabels;
 import com.shapes.Line;
 import com.shapes.Rectangle;
 import com.shapes.Shape;
+import com.shapes.Shapes;
+
+/***
+ * 
+ * @author anilj
+ *
+ */
 
 class OOWindowAdapterOuterImpl extends WindowAdapter {
 	@Override
@@ -30,15 +56,20 @@ class OOWindowAdapterOuterImpl extends WindowAdapter {
 	}
 }
 
+
 public class OODrawApp extends JFrame {
 
 	private JPanel canvas = new JPanel();
 	private Shape shape = new Line();
+	private JLabel timeLabel;
+	private ResourceBundle labelsBundle;
+	
 	private List<Shape> shapes = new ArrayList<Shape>();
 
 	public OODrawApp() {
 
-		this.setSize(400, 500);
+		labelsBundle = ResourceBundle.getBundle("labels");
+		this.setSize(600, 500);
 		this.setTitle("Draw App");
 		this.addWindowListener(new OOWindowAdapterOuterImpl());
 		this.initializeComponents();
@@ -48,7 +79,8 @@ public class OODrawApp extends JFrame {
 
 	private void initializeComponents() {
 
-		JButton lineButton = new JButton("Line");
+		JButton lineButton = new JButton(labelsBundle.getString(ResourceLabels.LINE_LABEL));
+		
 		/*
 		 * lineButton.addActionListener(new ActionListener() {
 		 * 
@@ -61,7 +93,7 @@ public class OODrawApp extends JFrame {
 		lineButton.addActionListener(e ->  shape = new Line());
 		
 		
-		JButton rectButton = new JButton("Rectangle");
+		JButton rectButton = new JButton(labelsBundle.getString(ResourceLabels.RECT_LABEL));
 //		rectButton.addActionListener(new ActionListener() {
 //
 //			@Override
@@ -83,8 +115,155 @@ public class OODrawApp extends JFrame {
 		canvas.addMouseListener(mouseAdpaterImpl);
 		canvas.addMouseMotionListener(mouseAdpaterImpl);
 
+		
+		JPanel  bottomPanel= new JPanel();
+		JButton saveButton = new JButton(labelsBundle.getString(ResourceLabels.SAVE_LABEL));
+		saveButton.addActionListener((e) -> {
+			
+			JFileChooser fileChooser = new JFileChooser();
+			int result = fileChooser.showSaveDialog(OODrawApp.this);
+			if(result == JFileChooser.APPROVE_OPTION) {
+			
+				//System.out.println("Selected File: " + fileChooser.getSelectedFile().getName());
+				File selectedFile = fileChooser.getSelectedFile();
+				
+				try(FileOutputStream fileOutputStream = new FileOutputStream(selectedFile)){
+					
+					ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+					objectOutputStream.writeObject(shapes);
+					System.out.println("Saved all shapes");
+					
+				}catch (Exception e2) {
+					e2.printStackTrace();
+				}
+				
+			}
+			
+			
+		});
+		
+		JButton openButton = new JButton(labelsBundle.getString(ResourceLabels.OPEN_LABEL));
+		openButton.addActionListener((e) -> {
+			
+			JFileChooser fileChooser = new JFileChooser();
+			int result = fileChooser.showOpenDialog(OODrawApp.this);
+			if(result == JFileChooser.APPROVE_OPTION) {
+				
+				File selectedFile = fileChooser.getSelectedFile();
+				try(FileInputStream fileInputStream = new FileInputStream(selectedFile)){
+					
+					ObjectInputStream inputStream = new ObjectInputStream(fileInputStream);
+					shapes = (List<Shape>) inputStream.readObject();
+					for (Shape shape : shapes) {
+						
+						shape.draw(canvas.getGraphics());
+					}
+					
+				}catch (Exception e3) {
+					e3.printStackTrace();
+				}
+			}
+			
+		});
+		
+		JButton saveXMLButton = new JButton(labelsBundle.getString(ResourceLabels.SAVE_XML_LABEL));
+		saveXMLButton.addActionListener((e) -> {
+			
+			JFileChooser fileChooser = new JFileChooser();
+			int result = fileChooser.showSaveDialog(OODrawApp.this);
+			if(result == JFileChooser.APPROVE_OPTION) {
+			
+				//System.out.println("Selected File: " + fileChooser.getSelectedFile().getName());
+				File selectedFile = fileChooser.getSelectedFile();
+				
+				try {
+					Shapes allShapes = new Shapes();
+					allShapes.setShapes(shapes);
+					
+					JAXBContext context = JAXBContext.newInstance(allShapes.getClass());
+					Marshaller marshaller = context.createMarshaller();
+					marshaller.marshal(allShapes, selectedFile);
+					System.out.println("Saved into XML");
+					
+				} catch (JAXBException e1) {
+					
+					e1.printStackTrace();
+				}
+				
+				
+			}
+		});
+		JButton openXMLButton = new JButton(labelsBundle.getString(ResourceLabels.OPEN_XML_LABEL));
+		openXMLButton.addActionListener((e) -> {
+			
+			
+			JFileChooser fileChooser = new JFileChooser();
+			int result = fileChooser.showOpenDialog(OODrawApp.this);
+			if(result == JFileChooser.APPROVE_OPTION) {
+				
+				File selectedFile = fileChooser.getSelectedFile();
+				
+				
+				try {
+					Shapes allShapes = new Shapes();
+					JAXBContext context = JAXBContext.newInstance(allShapes.getClass());
+					Unmarshaller unmarshaller = context.createUnmarshaller();
+					allShapes =  (Shapes) unmarshaller.unmarshal(selectedFile);		
+					shapes = allShapes.getShapes();
+					for (Shape shape : shapes) {
+						
+						shape.draw(canvas.getGraphics());
+					}
+					
+				} catch (JAXBException e1) {
+					
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		LocalTime localTime = LocalTime.now();
+		timeLabel = new JLabel(localTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)));
+		
+		LocalDate localDate = LocalDate.now();
+		JLabel dateLabel = new JLabel(localDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)));
+		
+		
+		
+		
+		bottomPanel.add(saveButton);
+		bottomPanel.add(openButton);
+		
+		bottomPanel.add(saveXMLButton);
+		bottomPanel.add(openXMLButton);
+		
+		bottomPanel.add(dateLabel);
+		bottomPanel.add(timeLabel);
+		
 		this.getContentPane().add(topPanel, BorderLayout.NORTH);
 		this.getContentPane().add(canvas, BorderLayout.CENTER);
+		this.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+		
+		updateTime();
+	}
+
+	private void updateTime() {
+		
+		Thread thread = new Thread(() -> {
+			
+			while(true) {
+				LocalTime localTime = LocalTime.now();
+				timeLabel.setText(localTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)));
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		});
+		thread.start();
 	}
 
 	@Override
@@ -158,7 +337,12 @@ public class OODrawApp extends JFrame {
 //		JFrame frame = new JFrame("Draw App");
 //		frame.setSize(400, 400);
 //		frame.setVisible(true);
-
+		
+		if(args.length == 2) {
+			
+			Locale.setDefault(new Locale(args[0], args[1]));
+		}
+		
 		new OODrawApp();
 
 	}

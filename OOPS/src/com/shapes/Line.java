@@ -9,6 +9,7 @@ public class Line extends Shape{
 		g.drawLine(start.x, start.y, end.x, end.y);
 		
 	}
+	
 
 	@Override
 	public Shape createInstance() {
